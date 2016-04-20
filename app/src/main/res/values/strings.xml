@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">RazeRoutes</string>
+    <string name="title_activity_setings">Setings</string>
 </resources>
