@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,18 +13,14 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
 
-import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 //route drawing code taken from
 //http://javapapers.com/android/draw-path-on-google-maps-android-api/
@@ -34,8 +29,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     final String TAG = "PathGoogleMapActivity";
-    private RouteSQLiteOpenHelper routeHelper;
-    private SQLiteDatabase routeDB;
 
 
     @Override
@@ -55,35 +48,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
-        routeHelper = new RouteSQLiteOpenHelper(this);
-        routeDB = routeHelper.getWritableDatabase();
-//        Button btn = (Button) findViewById(R.id.findBtn);
-//        btn.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View v)
-//            {
-//            }
-//        });
-        ArrayList<Route> routes = new ArrayList<>();
 
-        new RoutesJSON(routes).execute("https://campusdata.uark.edu/api/routes");
-        for(Route r:routes){
-            routeHelper.insert(routeDB,r);
-        }
+
+
 
     }
-    private String getMapsApiDirectionsUrl(Route r) {
-        ArrayList<LatLng> shape = (ArrayList)r.getShape();
-        String waypoints = "waypoints=optimize:true|";
-        for(int i = 0;i<1;i++){
-            waypoints = waypoints + shape.get(i).latitude+","+shape.get(i).longitude+"|";
-        }
+    private String getMapsApiDirectionsUrl(ArrayList<LatLng> pointSet) {
 
+
+        String waypoints = "waypoints=optimize:true|";
+
+        String points="";
+        for(int i =0;i<pointSet.size()-2;i++){
+
+            points = points+pointSet.get(i).latitude+","+pointSet.get(i).longitude+"|";
+        }
+        waypoints = waypoints+points;
+        Log.i(TAG,waypoints);
         String sensor = "sensor=false";
         //String params = waypoints + "&" + sensor;
-        String origin = "origin=" + shape.get(0).latitude + "," + shape.get(0).longitude;
-        String destination = "destination=" + shape.get(0).latitude + "," + shape.get(0).longitude;
+        String origin = "origin=" + pointSet.get(pointSet.size()-2).latitude + "," + pointSet.get(pointSet.size()-2).longitude;
+        String destination = "destination=" + pointSet.get(pointSet.size()-1).latitude + "," + pointSet.get(pointSet.size()-1).longitude;
         String params = origin + "&" + destination + "&" + waypoints + "&" + sensor;
         String output = "json";
         String url = "https://maps.googleapis.com/maps/api/directions/"
@@ -91,16 +76,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return url;
     }
 
-    private void addMarkers() {
-        if (mMap != null) {
-            mMap.addMarker(new MarkerOptions().position(UNION_STATION)
-                    .title("First Point"));
-            mMap.addMarker(new MarkerOptions().position(MEADOW)
-                    .title("Second Point"));
-            mMap.addMarker(new MarkerOptions().position(REID_HALL)
-                    .title("Third Point"));
-        }
-    }
+//    private void addMarkers() {
+//        if (mMap != null) {
+//            mMap.addMarker(new MarkerOptions().position(UNION_STATION)
+//                    .title("First Point"));
+//            mMap.addMarker(new MarkerOptions().position(MEADOW)
+//                    .title("Second Point"));
+//            mMap.addMarker(new MarkerOptions().position(REID_HALL)
+//                    .title("Third Point"));
+//        }
+//    }
 
     private class ReadTask extends AsyncTask<String, Void, String> {
         @Override
@@ -148,6 +133,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             PolylineOptions polyLineOptions = null;
 
             // traversing through routes
+            Log.i(TAG, String.valueOf(routes.size()));
             for (int i = 0; i < routes.size(); i++) {
                 points = new ArrayList<LatLng>();
                 polyLineOptions = new PolylineOptions();
@@ -165,7 +151,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 polyLineOptions.addAll(points);
                 polyLineOptions.width(5);
-                polyLineOptions.color(Color.YELLOW);
+                polyLineOptions.color(Color.BLUE);
             }
 
             mMap.addPolyline(polyLineOptions);
@@ -187,18 +173,48 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        MarkerOptions options = new MarkerOptions();
-        options.position(UNION_STATION);
-        options.position(MEADOW);
-        options.position(REID_HALL);
-        mMap.addMarker(options);
-//        String url = getMapsApiDirectionsUrl();
-//        ReadTask downloadTask = new ReadTask();
-//        downloadTask.execute(url);
+//        MarkerOptions options = new MarkerOptions();
+//        options.position(UNION_STATION);
+//        options.position(MEADOW);
+//        options.position(REID_HALL);
+//        mMap.addMarker(options);
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(UNION_STATION,
-                13));
-        addMarkers();
+
+        ArrayList<LatLng> Shape = new ArrayList<>();
+        ArrayList<LatLng> pointSet;
+        String shape = "36.067868 -94.176374,36.067992 -94.176356,36.068038 -94.176209,36.068031 -94.17568,36.068951 -94.175695,36.070195 -94.175512,36.07053 -94.175537,36.074009 -94.175468,36.076733 -94.175339,36.087631 -94.175007,36.087606 -94.173378,36.087681 -94.173266,36.087808 -94.173197,36.088339 -94.172929,36.088365 -94.172571,36.088313 -94.170581,36.079093 -94.170832,36.074661 -94.170993,36.070253 -94.1711,36.070314 -94.173347,36.070362 -94.175425,36.07032 -94.175588,36.067718 -94.175664,36.067731 -94.176175,36.067762 -94.176352,36.067862 -94.176379";
+        String[] pairs = shape.split(",");
+        for(int i=0;i<pairs.length;i++){
+            String[]pair = pairs[i].split(" ");
+            double lat = Double.parseDouble(pair[0]);
+            double lng = Double.parseDouble(pair[1]);
+            LatLng latLng = new LatLng(lat,lng);
+            Shape.add(latLng);
+        }
+        int counter = 0;
+        while(counter<Shape.size()){
+            pointSet = new ArrayList<>();
+            int subcounter = 0;
+            for(int i =0;i<8;i++){
+                if(i+counter<Shape.size()){
+                pointSet.add(Shape.get(i+counter));
+                }
+                subcounter++;
+            }
+            pointSet.add(pointSet.get(0));
+            pointSet.add(pointSet.get(pointSet.size()-1));
+            counter+=subcounter;
+            counter--;
+
+            String url = getMapsApiDirectionsUrl(pointSet);
+            ReadTask downloadTask = new ReadTask();
+            Log.i(TAG,url);
+            downloadTask.execute(url);
+        }
+        LatLng UNION_STATION = new LatLng(36.067868, -94.176374);
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(UNION_STATION, 13));
+//        addMarkers();
 
     }
 
