@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
 
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
@@ -21,6 +22,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 //route drawing code taken from
 //http://javapapers.com/android/draw-path-on-google-maps-android-api/
@@ -30,7 +32,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     final String TAG = "PathGoogleMapActivity";
 
-
+    //String output = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,11 +49,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
+//        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener());
+        
 
 
 
-
-
+       // new JSONTask(output).execute("https://campusdata.uark.edu/api/buses?callback=?&2");
+        //Log.i(TAG,output);
     }
     private String getMapsApiDirectionsUrl(ArrayList<LatLng> pointSet) {
 
@@ -171,13 +175,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
+        LatLng bus = new LatLng(36.0604166,-94.1834819);
         // Add a marker in Sydney and move the camera
-//        MarkerOptions options = new MarkerOptions();
-//        options.position(UNION_STATION);
+        MarkerOptions options = new MarkerOptions();
+        options.position(bus);
 //        options.position(MEADOW);
 //        options.position(REID_HALL);
-//        mMap.addMarker(options);
+        mMap.addMarker(options);
 
 
         ArrayList<LatLng> Shape = new ArrayList<>();
