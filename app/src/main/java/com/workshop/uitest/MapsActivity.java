@@ -265,4 +265,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    public void onFind(View view){
+
+    }
+
+    public void onResetMap(View view){
+        mMap.clear();
+    }
+
 }
