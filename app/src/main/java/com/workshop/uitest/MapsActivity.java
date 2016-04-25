@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -266,11 +267,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void onFind(View view){
+        Context context = getApplicationContext();
+        CharSequence text = "FIND NEAREST BUS";
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
 
     }
 
     public void onResetMap(View view){
         mMap.clear();
+        Context context = getApplicationContext();
+        CharSequence text = "RESET MAP";
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
     }
 
 }
