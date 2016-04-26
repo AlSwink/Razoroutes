@@ -98,8 +98,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Log.i(TAG,output);
     }
 
+    /* -------------------------------------------------------------------------------------------*/
     private void test ()
     {
+        final ArrayList<Integer> selecterRouts = new ArrayList<>();
         GetRoutes gr = new GetRoutes(new onTaskDone()
         {
             @Override
@@ -107,7 +109,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             {
                 for (int i=0; i < routes.size(); i++)
                 {
-                    if (routes.get(i).isInService() == 1)
+                    if ((routes.get(i).isInService() == 1) && (routes.get(i).getStatus() == 1))
                     {
                         Log.d(TAG, "ID              :" + routes.get(i).getID()           );
                         Log.d(TAG, "Name            :" + routes.get(i).getName()         );
@@ -122,9 +124,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         Log.d(TAG, "DepartureStop   :" + routes.get(i).getDepartureStop());
                         Log.d(TAG, "NextDeparture   :" + routes.get(i).getNextDeparture());
                         Log.d(TAG, "-------------------------------------------------------" );
+                        selecterRouts.add(routes.get(i).getID());
                     }
                 }
             }
+            @Override
+            public void onGotBus(Vector<Buse> buses) {/* Do nothing */ }
         });
         try
         {
@@ -134,7 +139,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         {
             e.printStackTrace();
         }
+        GetBus gb = new GetBus(new onTaskDone()
+        {
+            @Override
+            public void ItIsDone(Vector<Route> routes) {/* Do nothing */}
+
+            @Override
+            public void onGotBus(Vector<Buse> buses)
+            {
+                for (int i=0; i < buses.size(); i++)
+                {
+                    Log.d(TAG, "BUSS : ID              :" + buses.get(i).getId());
+                    Log.d(TAG, "BUSS : Fleer           :" + buses.get(i).getFleer());
+                    Log.d(TAG, "BUSS : Name            :" + buses.get(i).getName());
+                    Log.d(TAG, "BUSS : Description     :" + buses.get(i).getDescription());
+                    Log.d(TAG, "-------------------------------------------------------" );
+                }
+            }
+        });
+        Log.d(TAG, "Sarting geting data from url");
+        try
+        {
+            gb.execute(new URL("https://campusdata.uark.edu/api/buses?callback=?&routeIds=1"));
+        } catch (MalformedURLException e)
+        {
+            e.printStackTrace();
+        }
     }
+    /* -------------------------------------------------------------------------------------------*/
 
     private String getMapsApiDirectionsUrl(ArrayList<LatLng> pointSet) {
 

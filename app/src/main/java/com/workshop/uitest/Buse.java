@@ -24,6 +24,28 @@ public class Buse
     private String NextStop;
     private String NextArrival;
 
+    public Buse(int ID, int fleer, String name, String description, int zonarId, String gpsId, double latitude, double longitude, double speed, String heading, boolean power, String date, String color, String routeName, int routeId, double distance, String nextStop, String nextArrival)
+    {
+        this.ID = ID;
+        Fleer = fleer;
+        Name = name;
+        Description = description;
+        ZonarId = zonarId;
+        GpsId = gpsId;
+        Latitude = latitude;
+        Longitude = longitude;
+        Speed = speed;
+        Heading = heading;
+        Power = power;
+        Date = date;
+        Color = color;
+        RouteName = routeName;
+        RouteId = routeId;
+        Distance = distance;
+        NextStop = nextStop;
+        NextArrival = nextArrival;
+    }
+    public Buse () {}
 
     public int getId()              { return ID;}
     public int getFleer()           { return Fleer;}
