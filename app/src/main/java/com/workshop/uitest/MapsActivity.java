@@ -91,9 +91,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-
-
-
         test ();
        // new JSONTask(output).execute("https://campusdata.uark.edu/api/buses?callback=?&2");
         //Log.i(TAG,output);
@@ -112,22 +109,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 {
                     if ((routes.get(i).isInService() == 1) && (routes.get(i).getStatus() == 1))
                     {
-                        Log.d(TAG, "ID              :" + routes.get(i).getID()           );
-                        Log.d(TAG, "Name            :" + routes.get(i).getName()         );
-                        Log.d(TAG, "Description     :" + routes.get(i).getDescription()  );
-                        Log.d(TAG, "Color           :" + routes.get(i).getColor()        );
-                        Log.d(TAG, "Shape           :" + routes.get(i).getShape()        );
-                        Log.d(TAG, "Status          :" + routes.get(i).getStatus()       );
-                        Log.d(TAG, "inService       :" + routes.get(i).isInService()     );
-                        Log.d(TAG, "url             :" + routes.get(i).getUrl()          );
-                        Log.d(TAG, "NextArrival     :" + routes.get(i).getNextArrival()  );
-                        Log.d(TAG, "Length          :" + routes.get(i).getLength()       );
-                        Log.d(TAG, "DepartureStop   :" + routes.get(i).getDepartureStop());
-                        Log.d(TAG, "NextDeparture   :" + routes.get(i).getNextDeparture());
-                        Log.d(TAG, "-------------------------------------------------------" );
+                        // Log.d(TAG, "ID              :" + routes.get(i).getID()           );
+                        // Log.d(TAG, "Name            :" + routes.get(i).getName()         );
+                        // Log.d(TAG, "Description     :" + routes.get(i).getDescription()  );
+                        // Log.d(TAG, "Color           :" + routes.get(i).getColor()        );
+                        // Log.d(TAG, "Shape           :" + routes.get(i).getShape()        );
+                        // Log.d(TAG, "Status          :" + routes.get(i).getStatus()       );
+                        // Log.d(TAG, "inService       :" + routes.get(i).isInService()     );
+                        // Log.d(TAG, "url             :" + routes.get(i).getUrl()          );
+                        // Log.d(TAG, "NextArrival     :" + routes.get(i).getNextArrival()  );
+                        // Log.d(TAG, "Length          :" + routes.get(i).getLength()       );
+                        // Log.d(TAG, "DepartureStop   :" + routes.get(i).getDepartureStop());
+                        // Log.d(TAG, "NextDeparture   :" + routes.get(i).getNextDeparture());
+                        // Log.d(TAG, "-------------------------------------------------------" );
                         selecterRouts.add(routes.get(i).getID());
                     }
                 }
+                testGetBuses(selecterRouts.get(0));
+                testGetBuses(selecterRouts.get(1));
+                testGetBuses(selecterRouts.get(2));
+                testGetBuses(selecterRouts.get(3));
             }
             @Override
             public void onGotBus(Vector<Buse> buses) {/* Do nothing */ }
@@ -140,6 +141,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         {
             e.printStackTrace();
         }
+    }
+
+    private void testGetBuses (int x)
+    {
+        // starting geting data for the buses that is on the routs
         GetBus gb = new GetBus(new onTaskDone()
         {
             @Override
@@ -158,10 +164,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         });
-        Log.d(TAG, "Sarting geting data from url");
         try
         {
-            gb.execute(new URL("https://campusdata.uark.edu/api/buses?callback=?&routeIds=1"));
+            gb.execute(new URL("https://campusdata.uark.edu/api/buses?callback=?&routeIds=" + x));
         } catch (MalformedURLException e)
         {
             e.printStackTrace();
