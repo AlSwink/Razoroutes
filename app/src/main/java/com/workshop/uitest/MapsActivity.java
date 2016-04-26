@@ -42,6 +42,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private String Green = "36.058506 -94.179786,36.058519 -94.180365,36.059204 -94.180346,36.059943 -94.180333,36.060626 -94.180301,36.061275 -94.180287,36.061877 -94.180271,36.062541 -94.18025,36.06279 -94.18022,36.063003 -94.180188,36.063102 -94.180204,36.063308 -94.180234,36.063827 -94.180212,36.06434 -94.180193,36.064922 -94.180158,36.06562 -94.180142,36.066246 -94.180118,36.066892 -94.180099,36.067419 -94.180089,36.0682 -94.180059,36.068839 -94.180038,36.069078 -94.179998,36.069371 -94.180022,36.0698 -94.18,36.070162 -94.179979,36.070241 -94.179939,36.070307 -94.179882,36.070368 -94.179794,36.070399 -94.179676,36.070386 -94.178845,36.070372 -94.177648,36.070374 -94.177192,36.070372 -94.176797,36.070372 -94.175735,36.070366 -94.175572,36.070345 -94.175518,36.070313 -94.1755,36.070277 -94.175502,36.070234 -94.175498,36.07019 -94.175505,36.070091 -94.175513,36.069857 -94.175542,36.069614 -94.175579,36.069429 -94.175589,36.069258 -94.175607,36.069082 -94.175631,36.068172 -94.175631,36.067716 -94.175636,36.067723 -94.175918,36.067724 -94.176126,36.067725 -94.176299,36.067732 -94.176404,36.067783 -94.176441,36.06789 -94.176449,36.067963 -94.176441,36.068007 -94.176429,36.068042 -94.176401,36.068053 -94.176345,36.068056 -94.176185,36.06805 -94.175924,36.068037 -94.175628,36.067653 -94.175636,36.067239 -94.175645,36.067062 -94.175698,36.066879 -94.175706,36.066647 -94.175698,36.066301 -94.175671,36.06593 -94.175628,36.065687 -94.17565,36.065631 -94.175811,36.065516 -94.175837,36.065149 -94.175805,36.064943 -94.175784,36.064781 -94.175746,36.064115 -94.175768,36.064015 -94.175776,36.063846 -94.175856,36.063705 -94.175805,36.063289 -94.175811,36.06315 -94.175813,36.063072 -94.175832,36.063061 -94.176213,36.063024 -94.176323,36.062463 -94.175993,36.06222 -94.175843,36.062086 -94.176047,36.061895 -94.176277,36.061676 -94.176422,36.061357 -94.176562,36.061134 -94.176605,36.060923 -94.176583,36.060726 -94.176537,36.060529 -94.176419,36.059943 -94.175961,36.05985 -94.17595,36.059126 -94.175945,36.0589 -94.175938,36.058716 -94.17591,36.05871 -94.175907,36.058631 -94.176444,36.058517 -94.177162,36.05848 -94.177511,36.058493 -94.178214,36.05851 -94.179024,36.058504 -94.179772";
     private String Blue = "36.067868 -94.176374,36.067992 -94.176356,36.068038 -94.176209,36.068031 -94.17568,36.068951 -94.175695,36.070195 -94.175512,36.07053 -94.175537,36.074009 -94.175468,36.076733 -94.175339,36.087631 -94.175007,36.087606 -94.173378,36.087681 -94.173266,36.087808 -94.173197,36.088339 -94.172929,36.088365 -94.172571,36.088313 -94.170581,36.079093 -94.170832,36.074661 -94.170993,36.070253 -94.1711,36.070314 -94.173347,36.070362 -94.175425,36.07032 -94.175588,36.067718 -94.175664,36.067731 -94.176175,36.067762 -94.176352,36.067862 -94.176379";
     private int color = 0;
+    private Vector<Route> activeRoutes = new Vector<>();
     //String output = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,19 +66,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onItemSelected(AdapterView<?> arg0, View arg1,
                                        int arg2, long arg3) {
                 // TODO Auto-generated method stub
+                Boolean active = false;
                 Object item = arg0.getItemAtPosition(arg2);
-                if (item!=null) {
+                if (item!=null&&!activeRoutes.isEmpty()) {
                     Toast.makeText(MapsActivity.this, item.toString(),
                             Toast.LENGTH_SHORT).show();
                     String test = item.toString();
-                    if(test.equals("Blue")){
-                        drawRoute(Blue);
-                        color = Color.BLUE;
+                    for(int i = 0;i<activeRoutes.size();i++){
+                        if(test.equals(activeRoutes.get(i).getName())){
+                            active = true;
+                            drawRoute(activeRoutes.get(i).getStrShape());
+                            color = Color.parseColor(activeRoutes.get(i).getColor());
+                        }
+
                     }
-                    else if(test.equals("Green")){
-                        drawRoute(Green);
-                        color = Color.GREEN;
-                    }
+                    if(!active)
+                        Toast.makeText(MapsActivity.this,"Route not active",Toast.LENGTH_SHORT).show();
                 }
                 Toast.makeText(MapsActivity.this, "Selected",
                         Toast.LENGTH_SHORT).show();
@@ -92,8 +96,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         test ();
-       // new JSONTask(output).execute("https://campusdata.uark.edu/api/buses?callback=?&2");
-        //Log.i(TAG,output);
     }
 
     /* -------------------------------------------------------------------------------------------*/
@@ -122,6 +124,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         // Log.d(TAG, "DepartureStop   :" + routes.get(i).getDepartureStop());
                         // Log.d(TAG, "NextDeparture   :" + routes.get(i).getNextDeparture());
                         // Log.d(TAG, "-------------------------------------------------------" );
+                        activeRoutes.add(routes.get(i));
                         selecterRouts.add(routes.get(i).getID());
                     }
                 }
@@ -195,17 +198,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 + output + "?" + params;
         return url;
     }
-
-//    private void addMarkers() {
-//        if (mMap != null) {
-//            mMap.addMarker(new MarkerOptions().position(UNION_STATION)
-//                    .title("First Point"));
-//            mMap.addMarker(new MarkerOptions().position(MEADOW)
-//                    .title("Second Point"));
-//            mMap.addMarker(new MarkerOptions().position(REID_HALL)
-//                    .title("Third Point"));
-//        }
-//    }
 
     private class ReadTask extends AsyncTask<String, Void, String> {
         @Override
@@ -282,6 +274,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void drawRoute(String shape){
+
         ArrayList<LatLng> Shape = new ArrayList<>();
         ArrayList<LatLng> pointSet;
         String[] pairs = shape.split(",");

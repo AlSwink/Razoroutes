@@ -74,6 +74,8 @@ public class Route {
         return Description;
     }
 
+    public String getStrShape() {return StrShape;}
+
     public void setDescription(String description)
     {
         Description = description;
