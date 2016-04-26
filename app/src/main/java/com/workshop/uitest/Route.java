@@ -2,6 +2,7 @@ package com.workshop.uitest;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -57,6 +58,7 @@ public class Route {
     //         inService="No";
     // }
     public void setShape(String shape){
+        Shape = new ArrayList<>();
         String[] pairs = shape.split(",");
         for(int i=0;i<pairs.length;i++){
             String[]pair = pairs[i].split(" ");
