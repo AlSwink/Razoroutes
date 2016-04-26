@@ -1,8 +1,11 @@
 package com.workshop.uitest;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Vector;
 
 import org.json.JSONObject;
 
@@ -90,10 +93,48 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
+        test ();
        // new JSONTask(output).execute("https://campusdata.uark.edu/api/buses?callback=?&2");
         //Log.i(TAG,output);
     }
 
+    private void test ()
+    {
+        GetRoutes gr = new GetRoutes(new onTaskDone()
+        {
+            @Override
+            public void ItIsDone(Vector<Route> routes)
+            {
+                for (int i=0; i < routes.size(); i++)
+                {
+                    if (routes.get(i).isInService() == 1)
+                    {
+                        Log.d(TAG, "ID              :" + routes.get(i).getID()           );
+                        Log.d(TAG, "Name            :" + routes.get(i).getName()         );
+                        Log.d(TAG, "Description     :" + routes.get(i).getDescription()  );
+                        Log.d(TAG, "Color           :" + routes.get(i).getColor()        );
+                        Log.d(TAG, "Shape           :" + routes.get(i).getShape()        );
+                        Log.d(TAG, "Status          :" + routes.get(i).getStatus()       );
+                        Log.d(TAG, "inService       :" + routes.get(i).isInService()     );
+                        Log.d(TAG, "url             :" + routes.get(i).getUrl()          );
+                        Log.d(TAG, "NextArrival     :" + routes.get(i).getNextArrival()  );
+                        Log.d(TAG, "Length          :" + routes.get(i).getLength()       );
+                        Log.d(TAG, "DepartureStop   :" + routes.get(i).getDepartureStop());
+                        Log.d(TAG, "NextDeparture   :" + routes.get(i).getNextDeparture());
+                        Log.d(TAG, "-------------------------------------------------------" );
+                    }
+                }
+            }
+        });
+        try
+        {
+            Log.d(TAG, "Sarting geting data from url");
+            gr.execute(new URL("https://campusdata.uark.edu/api/routes") );
+        } catch (MalformedURLException e)
+        {
+            e.printStackTrace();
+        }
+    }
 
     private String getMapsApiDirectionsUrl(ArrayList<LatLng> pointSet) {
 
