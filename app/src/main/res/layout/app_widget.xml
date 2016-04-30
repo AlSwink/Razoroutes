@@ -5,7 +5,6 @@
     android:background="@android:color/transparent"
     android:orientation="vertical">
 
-
     <TextView
         android:id="@+id/bus1"
         android:layout_width="match_parent"
@@ -15,7 +14,7 @@
         android:gravity="center_vertical|center_horizontal"
         android:includeFontPadding="false"
         android:singleLine="true"
-        android:text="12:01"
+        android:text="DEFAULT"
         android:textColor="#fff"
         android:textSize="30sp"/>
 
@@ -28,21 +27,8 @@
         android:gravity="center_vertical|center_horizontal"
         android:includeFontPadding="false"
         android:singleLine="true"
-        android:text="12:01"
+        android:text="DEFAULT"
         android:textColor="#fff"
         android:textSize="30sp"/>
-
-
-
-    <!--
-
-    <Chronometer
-        android:id="@+id/chronometer"
-        android:format="%s"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="40sp"/>
-
-        -->
 
 </LinearLayout>
