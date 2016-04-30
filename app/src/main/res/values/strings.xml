@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">RazorRoutes</string>
 <string name="demo_title">Google Maps API Demos</string>
-    <string name="title_activity_maps">UI Test</string>
+    <string name="title_activity_maps">RazorRoutes</string>
     <string-array name="route_array">
         <item>Blue</item>
         <item>Blue Reduced</item>
